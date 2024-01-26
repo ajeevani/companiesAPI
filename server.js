@@ -9,7 +9,7 @@ const db = new CompaniesDB();
 const HTTP_PORT = process.env.PORT || 8080;
 
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname+'/views/index.html'));
+    res.sendFile(path.join(__dirname+'/index.html'));
 });
 
 // POST /api/companies - Create a new company
