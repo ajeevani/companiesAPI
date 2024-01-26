@@ -5,6 +5,8 @@ require('dotenv').config();
 
 const app = express();
 const db = new CompaniesDB();
+const path = require('path');
+
 
 const HTTP_PORT = process.env.PORT || 8080;
 
