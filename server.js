@@ -1,3 +1,12 @@
+/*********************************************************************************
+ * WEB422 – Assignment 1
+ *  I declare that this assignment is my own work in accordance with Seneca Academic Policy.
+ * No part of this assignment has been copied manually or electronically from any other source
+ * (including web sites) or distributed to other students.
+ ** Name: Arman Jeevani Student ID: 158510180 Date: 24/01/2024
+ * Cyclic Link:https://crimson-abalone-yoke.cyclic.app/
+*/
+
 const express = require('express');
 const cors = require('cors');
 const CompaniesDB = require("./modules/companiesDB.js");
@@ -5,11 +14,16 @@ require('dotenv').config();
 
 const app = express();
 const db = new CompaniesDB();
+const path = require('path');
+
 
 const HTTP_PORT = process.env.PORT || 8080;
 
 app.get('/', (req, res) => {
-    res.json({ message: "API Listening" });
+    const filePath = path.join(__dirname, '/index.html');
+
+  // Send the HTML file
+  res.sendFile(filePath);
 });
 
 // POST /api/companies - Create a new company
