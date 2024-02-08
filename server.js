@@ -74,11 +74,16 @@ app.delete('/api/company/:id', (req, res) => {
 app.use(express.static(__dirname));
 
 // Initialize database and start server
-db.initialize(process.env.MONGODB_CONN_STRING).then(() => {
-    app.listen(HTTP_PORT, () => {
-        console.log(`Server listening on: ${HTTP_PORT}`);
-    });
-}).catch((err) => {
-    console.error("Failed to make database connection!");
-    console.error(err);
-});
+const startServer = async () => {
+    try {
+        await db.initialize(process.env.MONGODB_CONN_STRING);
+        app.listen(HTTP_PORT, () => {
+            console.log(`Server listening on: ${HTTP_PORT}`);
+        });
+    } catch (err) {
+        console.error("Failed to make database connection!");
+        console.error(err);
+    }
+};
+
+startServer();
