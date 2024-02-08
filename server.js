@@ -71,7 +71,7 @@ app.delete('/api/company/:id', (req, res) => {
         .catch(err => res.status(500).json({ error: err }));
 });
 
-app.use(express.static('public'));
+app.use(express.static(__dirname));
 
 // Initialize database and start server
 db.initialize(process.env.MONGODB_CONN_STRING).then(() => {
