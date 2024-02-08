@@ -4,15 +4,80 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Companies</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="/css/main.css">
 </head>
 <body>
-    <a href="https://crimson-abalone-yoke.cyclic.app/api/companies"> Get all companies</a> (/api/companies) - error
+    <!-- <a href="https://crimson-abalone-yoke.cyclic.app/api/companies"> Get all companies</a> (/api/companies) - error
     <br>
     <a href="https://crimson-abalone-yoke.cyclic.app/api/companies/?page=1&perPage=8"> Get per page</a> (api/companies?page=1&perPage=8) - works
     <br>
     <a href="https://crimson-abalone-yoke.cyclic.app/api/company/52cdef7e4bab8bd67529b254"> Get company by id</a> (api/company/52cdef7e4bab8bd67529b254) - works
     <br>
-    <p>Link to homepage - https://crimson-abalone-yoke.cyclic.app/</p>
+    <p>Link to homepage - https://crimson-abalone-yoke.cyclic.app/</p> -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">Arman - Company Data</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="justify-content-end" id="navbarSupportedContent">
+        <form class="d-flex" id="searchForm">
+            <input class="form-control me-2" type="search" placeholder="Name (case insensitive)" id="name" aria-label="Search">
+            <button class="btn btn-outline-success" id="search" type="submit">Search</button>
+            <button class="btn btn-outline-danger" id="reset" type="submit">Reset</button>
+        </form>
+        </div>
+    </div>
+    </nav>
 
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Description</th>
+                            <th># of Employees</th>
+                            <th>Offices (1)</th>
+                            <th>Category</th>
+                            <th>Founded</th>
+                            <th>Website</th>
+                            <th>Tags (2)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="companiesTable">
+                        <!-- Company rows will be added here dynamically -->
+                    </tbody>
+                </table>
+                <nav aria-label="Page navigation example">
+                    <ul class="pagination">
+                      <li class="page-item"><a class="page-link" href="#"><<</a></li>
+                      <li class="page-item"><a class="page-link" href="#"></a></li>
+                      <li class="page-item"><a class="page-link" href="#">>></a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+    <!-- Pagination and Modal setup here -->
+    <div class="modal fade" tabindex="-1" id="detailsModal">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title"></h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <p></p>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+          </div>
+        </div>
+    </div>
+    <script src="/js/main.js"></script>
 </body>
 </html>
