@@ -19,7 +19,7 @@ const path = require('path');
 app.use(cors());
 app.use(express.json());
 
-const HTTP_PORT = process.env.PORT || 3000;
+const HTTP_PORT = process.env.PORT || 8080;
 
 
 app.get('/', (req, res) => {
