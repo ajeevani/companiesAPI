@@ -48,6 +48,7 @@ document.addEventListener('DOMContentLoaded', () => {
         searchForm.addEventListener('submit', e => {
             e.preventDefault();
             const searchValue = document.querySelector('#searchForm input').value;
+            page=1;
             currentPageDisplay();
             loadCompanyData(searchValue);
         });
@@ -57,6 +58,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (clearForm) {
         clearForm.addEventListener('click', () => {
             document.querySelector('#searchForm input').value = '';
+            page=1;
             currentPageDisplay();
             loadCompanyData(); // Load data without any filter
         });
