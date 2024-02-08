@@ -16,11 +16,8 @@ const app = express();
 const db = new CompaniesDB();
 const path = require('path');
 
-app.use(cors());
-app.use(express.json());
 
 const HTTP_PORT = process.env.PORT || 8080;
-
 
 app.get('/', (req, res) => {
     const filePath = path.join(__dirname, '/index.html');
@@ -40,9 +37,9 @@ app.post('/api/companies', (req, res) => {
 app.get('/api/companies', (req, res) => {
     const { page, perPage, name } = req.query;
     db.getAllCompanies(page, perPage, name)
-      .then(companies => res.json(companies))
-      .catch(err => res.status(500).json({ error: err }));
-  });
+        .then(companies => res.json(companies))
+        .catch(err => res.status(500).json({ error: err }));
+});
 
 // GET /api/company/:id - Retrieve a single company by ID
 app.get('/api/company/:id', (req, res) => {
@@ -70,8 +67,6 @@ app.delete('/api/company/:id', (req, res) => {
         .then(() => res.status(204).end())
         .catch(err => res.status(500).json({ error: err }));
 });
-
-app.use(express.static(__dirname));
 
 // Initialize database and start server
 db.initialize(process.env.MONGODB_CONN_STRING).then(() => {
