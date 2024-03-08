@@ -15,7 +15,7 @@ require('dotenv').config();
 const app = express();
 const db = new CompaniesDB();
 const path = require('path');
-
+app.use(cors());
 
 const HTTP_PORT = process.env.PORT || 8080;
 
