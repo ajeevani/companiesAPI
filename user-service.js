@@ -29,6 +29,8 @@ module.exports.connect = function () {
 
         db.once('open', () => {
             User = db.model("users", userSchema);
+            console.log("Connected to MongoDB with connection string:", mongoDBConnectionString);
+            console.log("Connected to database:", db.name);
             resolve();
         });
     });
