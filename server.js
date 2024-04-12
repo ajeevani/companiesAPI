@@ -1,79 +1,121 @@
-/*********************************************************************************
- * WEB422 – Assignment 1
- *  I declare that this assignment is my own work in accordance with Seneca Academic Policy.
- * No part of this assignment has been copied manually or electronically from any other source
- * (including web sites) or distributed to other students.
- ** Name: Arman Jeevani Student ID: 158510180 Date: 24/01/2024
- * Cyclic Link:https://fair-loincloth-calf.cyclic.app/
-*/
-
 const express = require('express');
-const cors = require('cors');
-const CompaniesDB = require("./modules/companiesDB.js");
-require('dotenv').config();
-
 const app = express();
-const db = new CompaniesDB();
-const path = require('path');
-app.use(cors());
+const cors = require("cors");
+const dotenv = require("dotenv");
+dotenv.config();
+const userService = require("./user-service.js");
+const passport = require("passport");
+const passportJWT = require("passport-jwt");
+const jwt = require("jsonwebtoken");
 
 const HTTP_PORT = process.env.PORT || 8080;
 
-app.get('/', (req, res) => {
-    const filePath = path.join(__dirname, '/index.html');
+app.use(express.json());
+app.use(cors());
 
-  // Send the HTML file
-  res.sendFile(filePath);
+// Configure Passport
+let ExtractJwt = passportJWT.ExtractJwt;
+let JwtStrategy = passportJWT.Strategy;
+
+let jwtOptions = {};
+jwtOptions.jwtFromRequest = ExtractJwt.fromAuthHeaderWithScheme("jwt");
+jwtOptions.secretOrKey = process.env.JWT_SECRET;
+
+let strategy = new JwtStrategy(jwtOptions, function (jwt_payload, done) {
+    if (jwt_payload) {
+        return done(null, { _id: jwt_payload._id, userName: jwt_payload.userName });
+    } else {
+        return done(null, false);
+    }
 });
 
-// POST /api/companies - Create a new company
-app.post('/api/companies', (req, res) => {
-    db.addNewCompany(req.body)
-        .then(company => res.status(201).json(company))
-        .catch(err => res.status(500).json({ error: err }));
-});
+passport.use(strategy);
+app.use(passport.initialize());
 
-// GET /api/companies - Retrieve all companies
-app.get('/api/companies', (req, res) => {
-    const { page, perPage, name } = req.query;
-    db.getAllCompanies(page, perPage, name)
-        .then(companies => res.json(companies))
-        .catch(err => res.status(500).json({ error: err }));
-});
-
-// GET /api/company/:id - Retrieve a single company by ID
-app.get('/api/company/:id', (req, res) => {
-    db.getCompanyById(req.params.id)
-        .then(company => {
-            if (company) {
-                res.json(company);
-            } else {
-                res.status(404).json({ message: "Company not found" });
-            }
-        })
-        .catch(err => res.status(500).json({ error: err }));
-});
-
-// PUT /api/company/:id - Update a company
-app.put('/api/company/:id', (req, res) => {
-    db.updateCompanyById(req.params.id, req.body)
-        .then(company => res.json(company))
-        .catch(err => res.status(500).json({ error: err }));
-});
-
-// DELETE /api/company/:id - Delete a company
-app.delete('/api/company/:id', (req, res) => {
-    db.deleteCompanyById(req.params.id)
-        .then(() => res.status(204).end())
-        .catch(err => res.status(500).json({ error: err }));
-});
-
-// Initialize database and start server
-db.initialize(process.env.MONGODB_CONN_STRING).then(() => {
-    app.listen(HTTP_PORT, () => {
-        console.log(`Server listening on: ${HTTP_PORT}`);
+app.post("/api/user/register", (req, res) => {
+    userService.registerUser(req.body)
+    .then((msg) => {
+        res.json({ "message": msg });
+    }).catch((msg) => {
+        res.status(422).json({ "message": msg });
     });
-}).catch((err) => {
-    console.error("Failed to make database connection!");
-    console.error(err);
+});
+
+app.post("/api/user/login", (req, res) => {
+    userService.checkUser(req.body)
+    .then((user) => {
+        let payload = {
+            _id: user._id,
+            userName: user.userName
+        };
+        let token = jwt.sign(payload, process.env.JWT_SECRET);
+        res.json({ "message": "login successful", token: token });
+    }).catch(msg => {
+        res.status(422).json({ "message": msg });
+    });
+});
+
+app.get("/api/user/favourites", passport.authenticate('jwt', { session: false }), (req, res) => {
+    userService.getFavourites(req.user._id)
+    .then(data => {
+        res.json(data);
+    }).catch(msg => {
+        res.status(422).json({ error: msg });
+    })
+
+});
+
+app.put("/api/user/favourites/:id", passport.authenticate('jwt', { session: false }), (req, res) => {
+    userService.addFavourite(req.user._id, req.params.id)
+    .then(data => {
+        res.json(data)
+    }).catch(msg => {
+        res.status(422).json({ error: msg });
+    })
+});
+
+app.delete("/api/user/favourites/:id", passport.authenticate('jwt', { session: false }), (req, res) => {
+    userService.removeFavourite(req.user._id, req.params.id)
+    .then(data => {
+        res.json(data)
+    }).catch(msg => {
+        res.status(422).json({ error: msg });
+    })
+});
+
+app.get("/api/user/history", passport.authenticate('jwt', { session: false }), (req, res) => {
+    userService.getHistory(req.user._id)
+    .then(data => {
+        res.json(data);
+    }).catch(msg => {
+        res.status(422).json({ error: msg });
+    })
+
+});
+
+app.put("/api/user/history/:id", passport.authenticate('jwt', { session: false }), (req, res) => {
+    userService.addHistory(req.user._id, req.params.id)
+    .then(data => {
+        res.json(data)
+    }).catch(msg => {
+        res.status(422).json({ error: msg });
+    })
+});
+
+app.delete("/api/user/history/:id", passport.authenticate('jwt', { session: false }), (req, res) => {
+    userService.removeHistory(req.user._id, req.params.id)
+    .then(data => {
+        res.json(data)
+    }).catch(msg => {
+        res.status(422).json({ error: msg });
+    })
+});
+
+userService.connect()
+.then(() => {
+    app.listen(HTTP_PORT, () => { console.log("API listening on: " + HTTP_PORT) });
+})
+.catch((err) => {
+    console.log("unable to start the server: " + err);
+    process.exit();
 });
